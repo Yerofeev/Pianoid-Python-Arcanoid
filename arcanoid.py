@@ -52,8 +52,6 @@ class Bricks():
     
     def paint_bricks(self, i, mode=0):
         if mode != 0:
-            if i == 39:
-                print('39 now',end='')
             self.status = 'OFF'
             j = i // 10
             i = i %  10
@@ -117,7 +115,7 @@ class Ball:
         while True:             #while x != 0 and y != 0 and x != 62 and y != 22:
             
             print_there(x, y, '\033[93m' + '⏺')
-            sleep(0.01)
+            sleep(0.4)
             print_there( x, y, '\033[93m' + ' ')        
             x += i
             y += j
@@ -127,24 +125,20 @@ class Ball:
                 if (x + i) >= 60:
                     i = -i
                 j = -j
-            elif (y + j) in Bricks.obj_y:
+            elif (y + j) in Bricks.obj_y and (x + i) in Bricks.obj_x:
                 obj_num = int((y//2 - 1)*10 + (x // 6))
-                print('x',x,'y',y,obj_num,end='')
-                if obj_num == 39:
-                    print('in 39',bricks[39].status,end='')
-                    if bricks[39].status == 'ON':
-                        bricks[39].paint_bricks(39, mode=1)
-                        j = -j
-                        continue
-                else: 
-                    if bricks[obj_num].status == 'ON':
-                        print(obj_num,'not in 39!!!',end='')
-                        bricks[obj_num].paint_bricks(obj_num,mode=1) 
-                        j = -j
+                #print('x',x,'y',y,obj_num,end='')
+                if bricks[obj_num].status == 'ON':
+                    bricks[obj_num].paint_bricks(obj_num,mode=1) 
+                    if x in [x for x in range(1,62,6)]:
+                        print('x',x)
+                        i = -i
+                    else:    
+                        j = -j                        
                 #sleep(30)
             elif (y + j) == 22:
                 j =- j                      #delete!!!!! 
-            elif (x + i) <= 0 or (x + i) >= 60:
+            elif (x + i) <= 0 or (x + i) >= 59:
                 if (y + j) <= 0:
                     j = -j
                 i = -i
@@ -159,7 +153,7 @@ class Ball:
 def main():
     os.system('clear')
     os.system('setterm -cursor off')  
-    ball_1 = Ball(56, 10, 0.1)                      
+    ball_1 = Ball(23,23,0.1)#(56, 10, 0.1)                      
     paddle = Paddle(10, 3, 10)              #create paddle
     paddle.paint()                      #draw paddle
     bricks = [Bricks() for i in range(40)]          #create bricks
