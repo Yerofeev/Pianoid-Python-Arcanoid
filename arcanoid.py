@@ -14,14 +14,14 @@ from random import randint
 colors = ['\033[91m', '\033[93m', '\033[32m', '\033[34m', '\033[37m', '\033[35m', '\033[96m']  #[red,yellow,green,blue,white,purple,light blue] #Extented ANSI
 level_1  = []
 q=[]
-for j in range(1,10):
-   for  i in range(1,60,5):
+
+for j in range(2,9):
+   for  i in range(2,61,5):
       q.append(i)
       q.append(j)
       q.append((i+j)%2)
-      level_1.append(q[-3:]) 
-print(level_1)    
-sleep(5)
+      level_1.append(q[-3:])
+
 
 def print_there(x,y,text):   
    sys.stdout.write("\x1b7\x1b[%d;%df%s\x1b8" % (y, x, text))
@@ -29,72 +29,64 @@ def print_there(x,y,text):
    return
 
 def getChar():
-   """Dynamically reads one symbol entered by player"""
-   fd = sys.stdin.fileno()
-   oldSettings = termios.tcgetattr(fd)
-   while True:
-      try:
-         tty.setcbreak(fd)
-         answer = sys.stdin.read(1)
-         if answer == '\x1b':          #'\x1b[D' Left_Arrow     splitting into two parts!!!
-             answer = sys.stdin.read(2)   #https://stackoverflow.com/questions/7310958/is-it-possible-to-use-getch-to-obtain-inputs-of-varying-length              
-             if answer == '[D':
-                 return answer
-             if answer == '[C':
-                 return answer
-             else:
-                 continue
-         if answer == 's':
-             return answer
-         if answer == 'a':
-             return answer   
-         if answer == 'p':
-             return answer                
-         if answer == 'q':
-             print('Quit')
-             sleep(0.2)
-             sys.exit()                 
-         else:  break
-      finally:
-         termios.tcflush(sys.stdin, termios.TCIOFLUSH)
-         termios.tcsetattr(fd, termios.TCSADRAIN, oldSettings)
-   return answer	
+    fd = sys.stdin.fileno()
+    oldSettings = termios.tcgetattr(fd)
+    while True:
+        try:
+            tty.setcbreak(fd)
+            answer = sys.stdin.read(1)
+            if answer == '\x1b':          #'\x1b[D' Left_Arrow     splitting into two parts!!!
+                answer = sys.stdin.read(2)   #https://stackoverflow.com/questions/7310958/is-it-possible-to-use-getch-to-obtain-inputs-of-varying-length
+                if answer == '[D':
+                    return answer
+                if answer == '[C':
+                    return answer
+                else:
+                    continue
+            if answer == '1':
+                return answer
+            if answer == '2':
+                return answer   
+            if answer == '3':
+                return answer                
+            if answer == 'q':
+                 print('Quit')
+                 sleep(0.2)
+                 sys.exit()                 
+            else:  break
+        finally:
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+            termios.tcsetattr(fd, termios.TCSADRAIN, oldSettings)
+    return answer	
 
 def preliminaries():
     os.system('clear')
     os.system('setterm -cursor off') 
-    print_there(0,0,'\033[32m'+chr(9608)*61+'\033[0m')
+    print_there(0,0,'\033[32m'+chr(9608)*62+'\033[0m')
     for i in range(1,21):
-        print_there(0,i+1,'\033[32m'+chr(9608)+ ' '*59 + chr(9608) + '\033[0m')
+        print_there(0,i+1,'\033[32m'+chr(9608)+ ' '*60 + chr(9608) + '\033[0m')
     
 class Bricks():
     
     def __init__(self):
-        Bricks.obj_x = [x for x in range(2,62) if x not in range(7,62,6)]
-        Bricks.obj_y = [y for y in range(1,9)]  
+        #Bricks.obj_x = [x for x in range(2,62) if x not in range(7,62,6)]
+        #Bricks.obj_y = [y for y in range(1,9)]
         self.status = 'ON' 
     
     def paint_bricks(self, i, mode=0):
         if mode != 0:
             self.status = 'OFF'
-            j = i // 10
-            i = i %  10
-            print_there (2+i*6, 2+j*2,  '\033[96m' + ' '*6)
-            print_there (2+i*6, 3+j*2,  '\033[96m' + ' '*6)        #chr(9608)'█'    
+
+            print_there (i[0], i[1],  ' '*5)        #chr(9608)'█'    
 
             #for k in range (2+i%10*6,i%10*6+6):
             #   Bricks.obj_x.remove(k)
             #Bricks.obj_y.remove((i//10+1)*2); Bricks.obj_y.remove((i//10+1)*2-1)            
             return
-        j = i // 10
-        i = i %  10
-        if i % 2 == 0:
-            print_there (2+i*5, 2+j*2, '\033[35m' + chr(9608) + chr(9608)*3 + chr(9608) )
-            print_there (2+i*5, 3+j*2, '\033[91m' + chr(9608) + chr(9608)*3 + chr(9608) )        #chr(9608)'█'        
-                                                  #is it possible to ?
-        else:
-            print_there (2+i*5, 2+j*2, '\033[93m' + chr(9608) + chr(9608)*3 + chr(9608) )
-            print_there (2+i*5, 3+j*2, '\033[93m' + chr(9608) + chr(9608)*3 + chr(9608) )        #chr(9608)'█'                 
+         
+        print_there (i[0], i[1], colors[i[2]] + chr(9608) + chr(9608)*3 + chr(9608) )
+        #print_there (2+i*5, 3+j*2, '\033[93m' + chr(9608) + chr(9608)*3 + chr(9608) )        #chr(9608)'█'                 
+    
     def delete_brick(self,x,y,i):
 
         print_there (-2+i%10*7, (i//10+1)*2-1,  ' '*6)
@@ -140,37 +132,62 @@ class Ball:
         self.speed = speed
     def ball_display(self,x,y, bricks):  
         i, j = 1, -1
-
+        q = 0
         while True:             #while x != 0 and y != 0 and x != 62 and y != 22:
             
-            print_there(x, y, '\033[93m' + '⏺')
+            print_there(x, y,  '⏺')
             sleep(self.speed)
             print_there( x, y, '\033[93m' + ' ')        
             x += i; y += j                   #position of the ball in the next moment
             
             # Next moment  #---------------------------------------#-----------------------------#
-            if (y + j) <= 0:
+            if (y + j) <= 1:
                 if (x + i) >= 60:
                     i = -i
                 j = -j
-            elif (y + j) in Bricks.obj_y and (x + i) in Bricks.obj_x:
-                obj_num = int((y//2 - 1)*10 + (x // 6))
-                #print('x',x,'y',y,obj_num,end='')
-                if bricks[obj_num].status == 'ON':
-                    bricks[obj_num].paint_bricks(obj_num,mode=1) 
-                    if x in [x for x in range(1,62,6)] and y in [obj_num//10*2+1,obj_num//10*2+2]:
-                        print('x',x)
-                        j = -j
-                    else:    
-                        j = -j                        
-                #sleep(30)
-            elif (y + j) == 22:
-                j =- j                      #delete!!!!! 
-            elif (x + i) <= 0 or (x + i) >= 59:
-                if (y + j) <= 0:
+            if (x + i) <= 1 or (x + i) >= 59:
+                if (y + j) <= 1:
                     j = -j
                 i = -i
-                
+            if (y + j) == 22:
+                j = - j  # delete!!!!!
+            if (y + j) <= 8:
+                obj_num = check(x, y+j, i, j)
+
+
+                #whether next to i is object
+                if y <= 7 and check(x+i, y+j, i ,j):
+                #print(bricks[obj_num].status,end='')
+                if obj_num < 71 and bricks[obj_num - i].status == 'ON' and bricks[obj_num + 12*(-j)].status == 'ON':          #diagonal case
+                    bricks[obj_num - i].paint_bricks(level_1[obj_num - i], mode=1)
+                    i = -i
+
+
+
+                elif bricks[obj_num].status == 'ON':
+                    q += 1
+                    if q > 15:
+                        print('i', i, 'j', j, 'x', x, 'y', y, 't', t,'obj',obj_num,' ', end='')
+                    bricks[obj_num].paint_bricks(level_1[obj_num],mode=1)
+                   # if y_side:
+
+                    j = -j
+                else:                                           #border cas
+                    if bricks[obj_num - i].status == 'ON' and level_1[obj_num - i][0] != 57:
+                        #print('border case', obj_num, bricks[obj_num - 1].status, bricks[obj_num + 1].status, end='')
+                        bricks[obj_num - i].paint_bricks(level_1[obj_num - i], mode=1)
+                        j = -j
+
+
+   def check(x, y, i , j):
+       t = ((x - 2) // 5) * 5 + 2
+       print('i', i, 'j', j, 'x', x, 'y', y, 't', t, ' ', end='')
+       gen = ((i) for i, el in enumerate(level_1) if t == el[0])
+       for k in range(y + j - 1):
+           obj_num = next(gen)
+       print(obj_num, ' ', end='')
+       return obj_num
+
             #elif (x + i) in Bricks.obj_x:
                 
   
@@ -178,14 +195,16 @@ class Ball:
 
 
             
-def main(): 
+def main():
+   # start_time = time.time()
     preliminaries()
-    ball_1 = Ball(23,23,1)#(56, 10, 0.1)                      
+   # print("--- %s seconds ---" % (time.time() - start_time))
+    ball_1 = Ball(12, 15, 0.1)
     paddle = Paddle(10, 3, 10)              #create paddle
     paddle.paint()                      #draw paddle
     bricks = [Bricks() for i in level_1]          #create bricks
-    for i in len(level_1):
-        bricks[i].paint_bricks(level_1[i],mode=0)                  #draw bricks                   
+    for i in range(len(level_1)):
+        bricks[i].paint_bricks(level_1[i],mode=0)                  #draw bricks
     ball_1.ball_deamon(bricks)            #balls_thread
     while True:
             event = getChar()
@@ -197,19 +216,17 @@ def main():
                 direction = 'right'    
                 paddle.move(direction)
                 paddle.paint()       
-            elif event == 's':
-                ball_1.ball_set_speed(3)
-            elif event == 'a':
-                ball_1.ball_set_speed(0.03)  
-            elif event == 'p':
-                ball_1.ball_set_speed(1)                   
+            elif event == '1':
+                ball_1.ball_set_speed(7)
+            elif event == '2':
+                ball_1.ball_set_speed(0.2)
+            elif event == '3':
+                ball_1.ball_set_speed(0.02)
    
             
 
 if __name__=='__main__':
     try:
-        print_there(1,1,chr(9608) + chr(9608)*3 + chr(9608))
-        sleep(3)
         
         main()
     finally:
