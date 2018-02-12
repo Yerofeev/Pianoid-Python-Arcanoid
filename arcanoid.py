@@ -15,7 +15,7 @@ colors = ['\033[91m', '\033[93m', '\033[32m', '\033[34m', '\033[37m', '\033[35m'
 M = [[1 for x in range(63)] for y in range(18)]
 color_level_1 = [[i%2] if (i//12)%2==0 else [(i-1)%2] for i in range(84)]
 prizes_level_1 = [0 if x not in [76,77,80] else 1 for x in range(84)]
-prizes_level_1[75] = 1; prizes_level_1[77] = 2; prizes_level_1[80] = 3
+prizes_level_1[75] = 1; prizes_level_1[80] = 2; prizes_level_1[81] = 3
 
 prizes = {}
 balls = {}
@@ -82,7 +82,7 @@ class Prize():
             while y != 21:
                 print_there(x+1,y,self.prize_type)
                 sleep(0.1)
-                print_there(x+1,y,' ')
+                print_there(x+1,y,' '*1)
                 y += 1
             if self.prize_type == '⏹':
                 paddle.length -= 2
@@ -104,6 +104,7 @@ class Bricks():
     def __init__(self,i):
         #Bricks.obj_x = [x for x in range(2,62) if x not in range(7,62,6)]
         #Bricks.obj_y = [y for y in range(1,9)]
+        Bricks.d = {}
         self.status = 'ON'
         self.color = colors[color_level_1[i][0]]
         self.number = i
@@ -116,6 +117,7 @@ class Bricks():
             M[y-1][x:x+5] = [i-1 for i in M[y-1][x:x+5]]            #for k in range (2+i%10*6,i%10*6+6):
             if M[y-1][x] != 0: return
             self.status = 'OFF'
+            Bricks.d[i]='OFF'
             print_there (x , y-1 , ' '*5)        #chr(9608)'█'
             if self.prize != 0:
 
@@ -227,7 +229,8 @@ def main():
         bricks[i].paint_bricks(paddle, bricks, i=i,mode=0)                  #draw bricks   # sort out paddle
     balls[0] = Ball(12, 15, 0.1)  # Create ball (x,y,speed)
     balls[0].ball_deamon(bricks, paddle)            #balls_thread
-    while True:
+    while paddle.lives > 0:
+        while len(Bricks.d) != 3:
             event = getChar()
             if event == '[D':
                 direction = 'left'
@@ -245,6 +248,9 @@ def main():
                 Ball.ball_set_speed(0.02)
             elif event == '4':
                 Ball.ball_set_speed(0.005)
+        print('OK')
+        sleep(1)
+        sys.exit()
 
 
 if __name__=='__main__':
