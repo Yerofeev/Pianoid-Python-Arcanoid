@@ -117,7 +117,7 @@ class Paddle:
 
 class Ball:
     count = 0
-    speed =  0.1
+    speed = 0.1
 
     def __init__(self, position, length):
         self.x = 19;position + length//2
@@ -179,30 +179,40 @@ class Ball:
             if 2 < y < 10:
                 #print('x', x, 'y', y, end='')
                 try:
-                    if M[y-1][x] != 0:
-                        if y <= 8 and M[(y)][x + i] != 0:        # if obj in x-nearby
-                            obj_num = (y - 2) * 12 + (x-2+i) // 5            # butt of the brick
-                            #print('x', x, 'y', y,'objx', obj_num,' ', end='')
-                            bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2+i)//5)*5)+2, y=y+1, i=obj_num,mode=1)    #y+1 on our line
-                            sleep(Ball.speed/2)
-                            i = -i
-                        obj_num = (y - 3)*12 + (x-2)//5
-                        #print('x', x, 'y', y,'objy',obj_num,' ',end='')
-                        bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2)//5)*5)+2, y=y , i=obj_num,mode=1)
-                        j = -j
 
-
-                    elif M[y-1][x+i] != 0:                             # diag case
-                        obj_num = (y - 3) * 12 + (x-2+i) // 5
-                        #print('i', i, 'x', x, 'y', y, 'objd', obj_num, M[y - 1][x + i], ' ', end='')
-                        bricks[obj_num].paint_bricks(paddle,bricks, x=(((x - 2+i) // 5) * 5) + 2, y=y,i=obj_num, mode=1)
-                        if (x-2)%5 == 4 or (x-2)%5 == 1:                        #if in last pixel  -
-                           # print('i',i,'x', x, 'y', y, 'objd', obj_num,M[y-2][x+i], ' ', end='')
-                            if M[y-2][x+i] != 0:                                       # but if there is brick in next moment then no
+                    #if j < 0:  # flying up
+                        if M[y+j][x] != 0:
+                            if y <= 8 and M[y][x + i] != 0:        # if obj in x-nearby
+                                obj_num = (y - 2) * 12 + (x-2+i) // 5            # butt of the brick
+                                #print('x', x, 'y', y,'objx', obj_num,' ', end='')
+                                bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2+i)//5)*5)+2, y=y+j, i=obj_num,mode=1)    #y+1 on our line
+                                sleep(Ball.speed/1.5)
                                 i = -i
-                            else: j = -j
-                        else:
+                            obj_num = (y + j - 2)*12 + (x-2)//5# (y - 3)*12 + (x-2)//5
+                            #print('x', x, 'y', y,'objy',obj_num,' ',end='')
+                            bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2)//5)*5)+2, y=y , i=obj_num,mode=1)
+                            j = -j
+                            continue
+
+                        elif   M[y][x+i] != 0: # x butt case
+                            obj_num = (y - 2) * 12 + (x-2+i) // 5
+                            bricks[obj_num].paint_bricks(paddle, bricks, x=(((x - 2 + i) // 5) * 5) + 2, y=y+j, i=obj_num,  mode=1)
                             i = -i
+
+                        elif M[y+j][x+i] != 0:                             # diag case
+                            obj_num = (y - 3) * 12 + (x-2+i) // 5
+                            #print('i', i, 'x', x, 'y', y, 'objd', obj_num, M[y - 1][x + i], ' ', end='')
+                            bricks[obj_num].paint_bricks(paddle,bricks, x=(((x - 2+i) // 5) * 5) + 2, y=y,i=obj_num, mode=1)
+                            #if (x-2)%5 == 4 or (x-2)%5 == 1:                        #if in last pixel  -
+                               # print('i',i,'x', x, 'y', y, 'objd', obj_num,M[y-2][x+i], ' ', end='')
+                            #    if M[y-2][x+i] != 0:                  # but if there is brick in next moment then no
+                            #        i = -i
+                            #    else: j = -j
+                            #else:
+                             #   i = -i
+                            i = -i; j = -j
+
+
                 except IndexError:
                     print('x', x, 'y', y, 'Eobj', obj_num, ' ', end='')
 
