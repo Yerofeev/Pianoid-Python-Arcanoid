@@ -13,8 +13,8 @@ from random import randint
 
 colors = ['\033[91m', '\033[93m', '\033[32m', '\033[34m', '\033[37m', '\033[35m', '\033[96m']  #[red,yellow,green,blue,white,purple,light blue] #Extented ANSI
 M = [[1 for x in range(63)] for y in range(18)]
-
-
+level_1 = [[i%2] if (i//12)%2==0 else [(i-1)%2] for i in range(84)]
+prizes = ['⧯','⏺']
 def print_there(x,y,text):   
    sys.stdout.write("\x1b7\x1b[%d;%df%s\x1b8" % (y, x, text))
    sys.stdout.flush()
@@ -59,28 +59,74 @@ def preliminaries():
     print_there(0,0,'\033[32m'+chr(9608)*62+'\033[0m')
     for i in range(1,21):
         print_there(0,i+1,'\033[32m'+chr(9608)+ ' '*60 + chr(9608) + '\033[0m')
-    
+
+
+
+
+class Prize():
+
+    def __init__(self, i ,x ,y, paddle,bricks):
+        prizes = {}
+        self.prize_type = i
+        self.prize_x = x
+        self.prize_y = y
+        self.threading = threading.Thread(target=self.prize, args=(self.prize_type,self.prize_x,self.prize_y, paddle,bricks))
+        self.threading.daemon = True
+        return
+
+    def prize_daemon(self):
+        self.threading.start()
+
+    def prize(self,prize_type,x,y,paddle,bricks):
+        if prize_type == 80:
+
+            while y != 21:
+                print_there(x+2,y,'⧯')
+                sleep(0.1)
+                print_there(x+2,y,' ')
+                y += 1
+            paddle.length += 2
+            paddle.paint()
+        elif prize_type  == 75:
+            while y != 21:
+                print_there(x+2,y,'⏺')
+                sleep(0.1)
+                print_there(x+2,y,' ')
+                y += 1
+
+            ball_2 = Ball (34, 20, 0.1)
+            ball_2.ball_deamon(bricks, paddle)
+
 class Bricks():
     
-    def __init__(self):
+    def __init__(self,i):
         #Bricks.obj_x = [x for x in range(2,62) if x not in range(7,62,6)]
         #Bricks.obj_y = [y for y in range(1,9)]
-        self.status = 'ON' 
+        self.status = 'ON'
+        self.color = colors[level_1[i][0]]
+        self.prize = 'NO'
     
-    def paint_bricks(self, x=0, y=0, mode=0):
+    def paint_bricks(self, paddle, bricks, i=0, x=0, y=0, mode=0):
         if mode != 0:
-            self.status = 'OFF'
             #print('(p)x',x,'y-1', y-1, ' ',end='')
+
+            M[y-1][x:x+5] = [i-1 for i in M[y-1][x:x+5]]            #for k in range (2+i%10*6,i%10*6+6):
+            if M[y-1][x] != 0: return
+            self.status = 'OFF'
             print_there (x , y-1 , ' '*5)        #chr(9608)'█'
-            M[y-1][x:x+5] = [0,0,0,0,0]            #for k in range (2+i%10*6,i%10*6+6):
+            if i == 75:
+                prize_0 = Prize(i, x, y-1, paddle, bricks)
+                prize_0.prize_daemon()
+            if i == 80:
+                prize_1 = Prize(i, x, y-1,paddle, bricks)
+                prize_1.prize_daemon()
             #print(M)
             #   Bricks.obj_x.remove(k)
             #Bricks.obj_y.remove((i//10+1)*2); Bricks.obj_y.remove((i//10+1)*2-1)            
             return
-        for j in range(7):
-            for i in range(12):
+        print_there((i%12)*5+2, i//12 + 2, self.color + chr(9608) + chr(9608)*3 + chr(9608))
 
-                print_there (i*5+2, 2+j,(lambda x: '\033[35m'  if (i+j)%2==0 else  '\033[93m')(i) + chr(9608) + chr(9608)*3 + chr(9608) )
+                #print_there (i*5+2, 2+j,(lambda x: '\033[35m'  if (i+j)%2==0 else  '\033[93m')(i) + chr(9608) + chr(9608)*3 + chr(9608) )
         #print_there (2+i*5, 3+j*2, '\033[93m' + chr(9608) + chr(9608)*3 + chr(9608) )        #chr(9608)'█'
 
     def delete_brick(self,x,y,i):
@@ -119,14 +165,15 @@ class Ball:
         self.y = y
         self.speed = speed
         
-    def ball_deamon(self, bricks):
-        self.threading = threading.Thread(target=self.ball_display, args=(self.x, self.y, bricks))
+    def ball_deamon(self, bricks, paddle):
+        self.threading = threading.Thread(target=self.ball_display, args=(self.x, self.y, bricks,paddle))
         self.threading.daemon = True
         self.threading.start()       
     
     def ball_set_speed(self, speed):
         self.speed = speed
-    def ball_display(self,x,y, bricks):  
+
+    def ball_display(self,x,y, bricks, paddle):
         i, j = 1, -1
         q = 0
         while True:             #while x != 0 and y != 0 and x != 62 and y != 22:
@@ -151,65 +198,32 @@ class Ball:
             if 2 < y < 10:
                 #print('x', x, 'y', y, end='')
                 try:
-                    if M[y-1][x] == 1:
+                    if M[y-1][x] != 0:
                         if y <= 8 and M[(y)][x + i] != 0:        # if obj in x-nearby
                             obj_num = (y - 2) * 12 + (x-2+i) // 5            # butt of the brick
                             #print('x', x, 'y', y,'objx', obj_num,' ', end='')
-                            bricks[obj_num].paint_bricks((((x-2+i)//5)*5)+2, y+1, mode=1)    #y+1 on our line
+                            bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2+i)//5)*5)+2, y=y+1, i=obj_num,mode=1)    #y+1 on our line
                             sleep(self.speed/2)
                             i = -i
                         obj_num = (y - 3)*12 + (x-2)//5
                         #print('x', x, 'y', y,'objy',obj_num,' ',end='')
-                        bricks[obj_num].paint_bricks((((x-2)//5)*5)+2, y , mode=1)
+                        bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2)//5)*5)+2, y=y , i=obj_num,mode=1)
                         j = -j
 
 
-                    elif M[y-1][x+i] == 1:                             # diag case
+                    elif M[y-1][x+i] != 0:                             # diag case
                         obj_num = (y - 3) * 12 + (x-2+i) // 5
                         #print('i', i, 'x', x, 'y', y, 'objd', obj_num, M[y - 1][x + i], ' ', end='')
-                        bricks[obj_num].paint_bricks((((x - 2+i) // 5) * 5) + 2, y, mode=1)
+                        bricks[obj_num].paint_bricks(paddle,bricks, x=(((x - 2+i) // 5) * 5) + 2, y=y,i=obj_num, mode=1)
                         if (x-2)%5 == 4 or (x-2)%5 == 1:                        #if in last pixel  -
                            # print('i',i,'x', x, 'y', y, 'objd', obj_num,M[y-2][x+i], ' ', end='')
-                            if M[y-2][x+i] == 1:                                       # but if there is brick in next moment then no
+                            if M[y-2][x+i] != 0:                                       # but if there is brick in next moment then no
                                 i = -i
                             else: j = -j
                         else:
                             i = -i
                 except IndexError:
-                    print('x', x, 'y', y, 'obj', obj_num, ' ', end='')
-'''
-                #whether next to i is object
-                if y <= 7 and check(x+i, y+j, i ,j):
-                #print(bricks[obj_num].status,end='')
-                if obj_num < 71 and bricks[obj_num - i].status == 'ON' and bricks[obj_num + 12*(-j)].status == 'ON':          #diagonal case
-                    bricks[obj_num - i].paint_bricks(level_1[obj_num - i], mode=1)
-                    i = -i
-
-
-
-                elif bricks[obj_num].status == 'ON':
-                    q += 1
-                    if q > 15:
-                        print('i', i, 'j', j, 'x', x, 'y', y, 't', t,'obj',obj_num,' ', end='')
-                    bricks[obj_num].paint_bricks(level_1[obj_num],mode=1)
-                   # if y_side:
-
-                    j = -j
-                else:                                           #border cas
-                    if bricks[obj_num - i].status == 'ON' and level_1[obj_num - i][0] != 57:
-                        #print('border case', obj_num, bricks[obj_num - 1].status, bricks[obj_num + 1].status, end='')
-                        bricks[obj_num - i].paint_bricks(level_1[obj_num - i], mode=1)
-                        j = -j
-
-
-   def check(x, y, i , j):
-       if M[y + j][x] == 0:
-           return 0
-       else: return 1
-
-            #elif (x + i) in Bricks.obj_x:
-                
-'''
+                    print('x', x, 'y', y, 'Eobj', obj_num, ' ', end='')
 
 
 
@@ -218,13 +232,13 @@ def main():
    # start_time = time.time()
     preliminaries()
    # print("--- %s seconds ---" % (time.time() - start_time))
-    ball_1 = Ball (24,17,0.1)#(12, 15, 0.1)
+    ball_1 = Ball (12, 15, 0.1)
     paddle = Paddle(10, 3, 10)              #create paddle
     paddle.paint()                      #draw paddle
-    bricks = [Bricks() for i in range(84)]          #create bricks
+    bricks = [Bricks(i) for i in range(84)]          #create bricks
     for i in range(84):
-        bricks[i].paint_bricks(mode=0)                  #draw bricks
-    ball_1.ball_deamon(bricks)            #balls_thread
+        bricks[i].paint_bricks(paddle, bricks, i=i,mode=0)                  #draw bricks   # sort out paddle
+    ball_1.ball_deamon(bricks, paddle)            #balls_thread
     while True:
             event = getChar()
             if event == '[D':
