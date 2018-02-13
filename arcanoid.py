@@ -183,25 +183,26 @@ class Ball:
                     #if j < 0:  # flying up
                         if M[y+j][x] != 0:
                             if y <= 8 and M[y][x + i] != 0:        # if obj in x-nearby
-                                obj_num = (y - 2) * 12 + (x-2+i) // 5            # butt of the brick
-                                #print('x', x, 'y', y,'objx', obj_num,' ', end='')
+                                obj_num = (y - 3) * 12 + (x-2+i) // 5            # butt of the brick
+                                print('x', x, 'y', y,'objyx', obj_num,' ', end='')
                                 bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2+i)//5)*5)+2, y=y+j, i=obj_num,mode=1)    #y+1 on our line
                                 sleep(Ball.speed/1.5)
                                 i = -i
                             obj_num = (y + j - 2)*12 + (x-2)//5# (y - 3)*12 + (x-2)//5
-                            #print('x', x, 'y', y,'objy',obj_num,' ',end='')
+                            print('x', x, 'y', y,'objy',obj_num,' ',end='')
                             bricks[obj_num].paint_bricks(paddle, bricks, x=(((x-2)//5)*5)+2, y=y , i=obj_num,mode=1)
                             j = -j
                             continue
 
                         elif   M[y][x+i] != 0: # x butt case
-                            obj_num = (y - 2) * 12 + (x-2+i) // 5
+                            obj_num = (y - 3) * 12 + (x-2+i) // 5
+                            print('i', i, 'x', x, 'y', y, 'objx', obj_num, M[y - 1][x + i], ' ', end='')
                             bricks[obj_num].paint_bricks(paddle, bricks, x=(((x - 2 + i) // 5) * 5) + 2, y=y+j, i=obj_num,  mode=1)
                             i = -i
 
                         elif M[y+j][x+i] != 0:                             # diag case
                             obj_num = (y - 3) * 12 + (x-2+i) // 5
-                            #print('i', i, 'x', x, 'y', y, 'objd', obj_num, M[y - 1][x + i], ' ', end='')
+                            print('i', i, 'x', x, 'y', y, 'objd', obj_num, M[y - 1][x + i], ' ', end='')
                             bricks[obj_num].paint_bricks(paddle,bricks, x=(((x - 2+i) // 5) * 5) + 2, y=y,i=obj_num, mode=1)
                             #if (x-2)%5 == 4 or (x-2)%5 == 1:                        #if in last pixel  -
                                # print('i',i,'x', x, 'y', y, 'objd', obj_num,M[y-2][x+i], ' ', end='')
@@ -251,7 +252,7 @@ def main():
                             else:
                                 continue
                         if answer == '1':
-                            Ball.ball_set_speed(1)
+                            Ball.ball_set_speed(3)
                         if answer == '2':
                             Ball.ball_set_speed(0.1)
                         if answer == '3':
