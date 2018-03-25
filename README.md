@@ -7,12 +7,12 @@ Besides this pecularity the goal is the same as always in such games: crash all 
 ![![alt text]]( https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/pianoid_1.gif)
 
  As the second peculiar trait, PIANOID was written with NO use of PYgame, curses etc.. Only modules from standard library were used. The game is programmed for Linux terminals, the only dependencies are Python and support of extended ANSI.
-Several general moments should be specified about the overall structure of the game:
-1 Input:
-1.1 Dynamic input without Enter
-1.2 Nonblocking input
-1.3 Arrows processing
-1.4 Esc key 
-Details and comments about its implementation scan be found in engine.get_key() function docstring
+Several general moments should be specified about some challenges and overall structure of the game:
+1. Dynamical nonblocking input, processing both Arrows and Esc (details in engine.get_key())
+2. Algorithm of ball's trajectory
+3. Prizes, there are dozen of them. Much of the inspiration taken from Krypton Egg arkanoid-like game. 
+The description of prizes can be found in help menu.
+4. Boss level with its own logic and adversaries
+5. Monsters appearing on all levels
 
-2. Algorithm of ball trajectory:
+How to install:
