@@ -21,8 +21,9 @@ def main():
 	rows, columns = os.popen('stty size', 'r').read().split()
 	if int(rows) != 24 or int(columns) != 80:
 		print(
-			'The game can be launched only in 80x25-sized terminal.'
-			'Open the standard-sized terminal and start game again.'
+			'Your terminal is ' + rows + 'x' + columns + '.'
+			'The game can be launched only in 80x24-sized terminal.'
+			' Open the standard-sized terminal and then start game again.'
 		)
 		return
 	old_settings = termios.tcgetattr(sys.stdin)
