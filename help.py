@@ -11,7 +11,7 @@ from resources import *
 def page_1(x=1):
 	os.system('clear')
 	text = '''
-	Pianoid is yet another arcanoid-game. Your paddle is a piano. The goal\n  is to clear the level by crashing the bricks with a ball. To assist you with\n  this arduous task you will encounter many types of prizes, listed on the next\n  page. 
+	Pianoid is yet another arkanoid-game. Your paddle is a piano. The goal\n  is to clear the level by crashing the bricks with a ball. To assist you with\n  this arduous task you will encounter many types of prizes, listed on the next\n  page. 
 	Besides the task to smash the bricks, you should evade monsters, there\n  are plenty of them on each level! After nine levels you will meet the Boss\n  Monster, where you will need all the skills acquired in the previous levels. 
    	There are several types of mosnters: Python-snake, clouds and zipper-\n  mouth foe. They start appearing after (4,6)seconds on common levels and after\n  (0,2)s on boss level and will occasionally drop bombs, so stay ready to dodge.\n  If bomb hits the piano, you will lose one live, but level won't be restarted\n  and balls are not stopped.
    	Monsters will attempt to destroy you with bombs, fire and to turn your\n  piano soundless. Some bricks will regenerate after a certain amount of time,\n  obfuscating your path towards the victory.Tips to cope with that are given at\n  the last page.The game goes on until there are lives left (by default there\n  are 4), when no balls left or Esc is pressed you lose one life. Already\n  destructed bricks on this floor are not respawned, if lives left more than 0.    	
