@@ -10,10 +10,16 @@ Besides this pecularity the goal is the same as always in such games: crash all 
 Several general moments should be specified about some challenges and overall structure of the game:
 1. Dynamical nonblocking input, processing both Arrows and Esc (details in engine.get_key())
 2. Algorithm of ball's trajectory
-3. Prizes, there are dozen of them. Much of the inspiration taken from Krypton Egg arkanoid-like game. 
-The description of prizes can be found in help menu.
+3. Monsters appearing on all levels, occasionally dropping bombs
 4. Boss level with its own logic and adversaries
-5. Monsters appearing on all levels
+5. Prizes, there are dozen of them. Much of the inspiration taken from Krypton Egg arkanoid-like game.
+
+
+
+
+![![alt text]](https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/Selection_009.png)
+
+
 
 Downside of the game is that control is very rough, much time it's better to quickly click Left/ight instead of continuosly pressing it.
 
