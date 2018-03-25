@@ -1,4 +1,4 @@
-## Pianoid.
+                                              ## Pianoid.
 Pianoid is yet another arkanoid-game, implemented in Python2.7-3.x. The distinctive feature of this game is its musical theme: your paddle is a piano, almost all prizes are connected to the music world and decor is filled with musical flavor.
 
 Besides this pecularity the goal is the same as always in such games: crash all the bricks with the ball. Just to let you to contemplate the several seconds of the game process:
