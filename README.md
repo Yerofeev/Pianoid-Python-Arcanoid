@@ -19,3 +19,6 @@ Downside of the game is that control is very rough, much time it's better to qui
 
 Screens:
 ![![alt text]](https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/Selection_002.png)
+![![alt text]](https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/Selection_007.png)
+![![alt text]](https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/Selection_004.png)
+![![alt text]](https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/Selection_003.png)
