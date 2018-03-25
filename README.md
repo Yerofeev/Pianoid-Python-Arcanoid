@@ -17,7 +17,7 @@ Several general moments should be specified about some challenges and overall st
 
 
 
-![![alt text]](https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/Selection_009.png)
+![![alt text]](https://github.com/Yerofeev/Pianoid-Python-Arkanoid/blob/master/pics/Selection_010.png)
 
 
 
